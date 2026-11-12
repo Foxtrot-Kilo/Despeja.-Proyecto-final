@@ -281,7 +281,11 @@ const dom = {
   modalInfo: document.getElementById('modal-info'),
   modalDistraction: document.getElementById('modal-distraction'),
   distractionInput: document.getElementById('distraction-input'),
-  btnSaveDistraction: document.getElementById('btn-save-distraction')
+  btnSaveDistraction: document.getElementById('btn-save-distraction'),
+
+  modalNewWorkspace: document.getElementById('modal-new-workspace'),
+  newWorkspaceNameInput: document.getElementById('new-workspace-name-input'),
+  btnConfirmCreateWorkspace: document.getElementById('btn-confirm-create-workspace')
 };
 
 
@@ -335,10 +339,21 @@ function renderWorkspacesTabs() {
 }
 
 function switchWorkspace(id) {
+  // Guardar borrador del espacio actual
+  const currentWs = getActiveWorkspace();
+  if (currentWs) {
+    currentWs.draftText = dom.dumpInput.value;
+  }
+
   state.activeWorkspaceId = id;
   renderWorkspacesTabs();
   const ws = getActiveWorkspace();
   dom.dumpCurrentSpaceLabel.textContent = `ESPACIO: ${ws.name.toUpperCase()}`;
+
+  // Restaurar borrador del espacio seleccionado
+  dom.dumpInput.value = ws.draftText || '';
+  dom.btnDump.disabled = dom.dumpInput.value.trim().length < 3;
+
   showScreen(ws.currentScreen || 'dump');
   if (ws.currentScreen === 'tunnel') {
     advanceToNextPending();
@@ -348,20 +363,28 @@ function switchWorkspace(id) {
   saveGlobalState();
 }
 
-function createNewWorkspace() {
-  const name = prompt('Nombre del nuevo espacio de trabajo (ej: Escuela, Proyecto X, Trámites):');
-  if (!name || !name.trim()) return;
+function openCreateWorkspaceModal() {
+  dom.newWorkspaceNameInput.value = '';
+  dom.modalNewWorkspace.classList.add('active');
+  setTimeout(() => dom.newWorkspaceNameInput.focus(), 60);
+}
+
+function confirmCreateWorkspace() {
+  const name = dom.newWorkspaceNameInput.value.trim();
+  if (!name) return;
   const newId = 'ws_' + Date.now();
   const indexStr = (state.workspaces.length + 1).toString().padStart(2, '0');
   state.workspaces.push({
     id: newId,
-    name: `${indexStr}/ ${name.trim()}`,
+    name: `${indexStr}/ ${name}`,
     tasks: [],
     currentTaskIndex: 0,
     completedCount: 0,
     postponedCount: 0,
-    currentScreen: 'dump'
+    currentScreen: 'dump',
+    draftText: ''
   });
+  dom.modalNewWorkspace.classList.remove('active');
   switchWorkspace(newId);
 }
 
@@ -751,7 +774,14 @@ dom.btnLater.addEventListener('click', handleLater);
 dom.btnTimerStart.addEventListener('click', toggleTimer);
 dom.btnTimerSkip.addEventListener('click', hideTimer);
 
-dom.btnNewWorkspace.addEventListener('click', createNewWorkspace);
+dom.btnNewWorkspace.addEventListener('click', openCreateWorkspaceModal);
+dom.btnConfirmCreateWorkspace.addEventListener('click', confirmCreateWorkspace);
+dom.newWorkspaceNameInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    confirmCreateWorkspace();
+  }
+});
 
 // Distracción rápida
 dom.btnDistraction.addEventListener('click', () => {
