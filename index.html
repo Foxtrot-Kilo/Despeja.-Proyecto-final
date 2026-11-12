@@ -3,124 +3,304 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Despejá — Herramienta contra el bloqueo mental</title>
+  <title>DESPEJÁ // Consola de Descompresión Mental</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div id="app">
+  <!-- ==================== BARRA SUPERIOR DE CONTROL ==================== -->
+  <header class="top-bar">
+    <div class="brand">
+      <span class="brand-glyph">⌖</span>
+      <span class="brand-title">DESPEJÁ</span>
+      <span class="brand-sub">SYS.v2.4 // FOCUS INSTRUMENT</span>
+    </div>
 
-    <!-- ==================== PANTALLA 1: DESCARGA MENTAL ==================== -->
-    <section id="screen-dump" class="screen active">
-      <div class="screen-content">
-        <div class="logo">Despejá</div>
-        <p class="tagline">Descargá todo lo que tenés en la cabeza. Después vemos.</p>
-
-        <textarea
-          id="dump-input"
-          rows="7"
-          placeholder="Escribí todo lo que te pesa, separado por comas o en líneas distintas.&#10;&#10;Ejemplo: terminar el TP de historia, contestarle al profe, ordenar el escritorio, estudiar para el parcial de mate"
-          autofocus
-        ></textarea>
-
-        <button id="btn-dump" class="btn btn-main" disabled>Descargar</button>
-
-        <p class="hint">
-          No hace falta que sea prolijo. Volcá todo y después lo separamos.
-        </p>
+    <!-- Selector de espacios de trabajo (Workspaces) -->
+    <nav class="workspaces-bar">
+      <div class="workspaces-list" id="workspaces-list">
+        <!-- Renderizado dinámicamente -->
       </div>
-    </section>
+      <button id="btn-new-workspace" class="btn-ctrl" title="Crear nuevo espacio de trabajo">+ ESPACIO</button>
+    </nav>
 
-    <!-- ==================== PANTALLA 2: MODO TÚNEL ==================== -->
-    <section id="screen-tunnel" class="screen">
-      <div class="screen-content">
+    <div class="top-actions">
+      <button id="btn-toggle-vault" class="btn-ctrl" title="Abrir bóveda de archivos y enlaces">
+        <span class="ctrl-icon">⎘</span>
+        <span class="ctrl-text">MATERIALES</span>
+        <span class="vault-badge" id="vault-badge">0</span>
+      </button>
+      <button id="btn-info" class="btn-ctrl" title="Base científica del método">
+        <span class="ctrl-icon">?</span>
+      </button>
+    </div>
+  </header>
 
-        <!-- Indicador de carga mental -->
-        <div class="tunnel-header">
-          <div class="stress-indicator">
-            <div class="stress-orb" id="stress-orb"></div>
-            <div class="stress-text">
-              <span class="stress-number" id="tasks-remaining">0</span>
-              <span class="stress-label" id="stress-label">cosas pendientes</span>
+  <!-- ==================== CONTENEDOR PRINCIPAL ==================== -->
+  <div class="layout-body">
+
+    <!-- LADO IZQUIERDO / CENTRO: CONSOLA DE TRABAJO -->
+    <main class="console-viewport">
+
+      <!-- PANTALLA 1: DESCARGA (DUMP) -->
+      <section id="screen-dump" class="panel-screen active">
+        <div class="panel-frame">
+          <div class="frame-header">
+            <span class="frame-tag">ENTRADA_01 // DESCOMPRESIÓN BRUTA</span>
+            <span class="frame-meta" id="dump-current-space-label">ESPACIO: GENERAL</span>
+          </div>
+
+          <div class="frame-body">
+            <h1 class="panel-heading">Vaciá la memoria de trabajo.</h1>
+            <p class="panel-lead">
+              Escribí todo lo que te genera resistencia en un solo bloque. El sistema lo separa y dosifica.
+            </p>
+
+            <div class="input-chassis">
+              <textarea
+                id="dump-input"
+                rows="6"
+                placeholder="Ejemplo: terminar informe de química, mandarle mail a la profe Ana, comprar cartulina, repasar integrales para el jueves..."
+                autofocus
+              ></textarea>
+              <div class="chassis-footer">
+                <span class="chassis-hint">Separadores: comas, saltos de línea o la letra «y»</span>
+                <span class="chassis-shortcut">Ctrl + Enter para procesar</span>
+              </div>
+            </div>
+
+            <div class="action-dock">
+              <button id="btn-dump" class="btn-hardware btn-primary" disabled>
+                <span class="btn-led"></span>
+                <span>INICIAR TÚNEL DE ACCIÓN</span>
+                <span class="btn-key">↵</span>
+              </button>
             </div>
           </div>
-          <button id="btn-back" class="btn-text" title="Volver al inicio">← volver</button>
         </div>
+      </section>
 
-        <!-- Tarjeta central: UNA sola tarea -->
-        <div class="tunnel-card" id="tunnel-card">
-          <div class="task-type-badge" id="task-type-label">Tarea</div>
-          <div class="task-name" id="task-name">...</div>
-          <div class="step-divider"></div>
-          <div class="step-section">
-            <div class="step-label">Siguiente paso concreto:</div>
-            <div class="step-instruction" id="step-instruction">...</div>
+      <!-- PANTALLA 2: MODO TÚNEL (UNA TAREA) -->
+      <section id="screen-tunnel" class="panel-screen">
+        <div class="panel-frame tunnel-frame">
+
+          <!-- Barra de telemetría superior -->
+          <div class="tunnel-telemetry">
+            <div class="telemetry-item">
+              <span class="t-label">ESTADO:</span>
+              <span class="t-val t-active">EN EJECUCIÓN</span>
+            </div>
+            <div class="telemetry-bar-wrap">
+              <div class="telemetry-bar-fill" id="telemetry-progress"></div>
+            </div>
+            <div class="telemetry-item">
+              <span class="t-label">RESTANTES:</span>
+              <span class="t-val" id="tasks-remaining-badge">0 / 0</span>
+            </div>
           </div>
-          <div class="step-counter" id="step-counter"></div>
-        </div>
 
-        <!-- Botones de acción -->
-        <div class="tunnel-actions">
-          <button id="btn-done" class="btn btn-done">Listo</button>
-          <button id="btn-simplify" class="btn btn-simplify">Es demasiado</button>
-          <button id="btn-later" class="btn btn-later">Después</button>
-        </div>
+          <!-- Módulo central del paso -->
+          <div class="tunnel-chassis" id="tunnel-card">
+            <div class="chassis-top">
+              <span class="task-category-tag" id="task-type-label">COMUNICACIÓN</span>
+              <span class="degradation-level-tag" id="task-level-tag">NIVEL 1: ESTÁNDAR</span>
+            </div>
 
-        <!-- Timer de 2 minutos (aparece cuando es necesario) -->
-        <div id="timer-section" class="timer-section">
-          <div class="timer-ring" id="timer-ring">
-            <span class="timer-display" id="timer-display">2:00</span>
+            <div class="task-origin">
+              <span class="origin-label">TAREA MATRIZ:</span>
+              <h2 class="origin-title" id="task-name">Cargando...</h2>
+            </div>
+
+            <!-- Paso activo en alta visibilidad -->
+            <div class="focus-gauge">
+              <div class="gauge-marker">ACCIONAR AHORA:</div>
+              <div class="focus-instruction" id="step-instruction">...</div>
+            </div>
+
+            <div class="chassis-meta">
+              <span id="step-counter">Paso 1 de 4</span>
+              <button id="btn-distraction" class="btn-text-link" title="Anotar algo que se te cruzó sin salir del túnel">
+                + Anotar distracción mental
+              </button>
+            </div>
           </div>
-          <p class="timer-note">
-            Si en 2 minutos querés dejarlo, cerrá sin culpa. En serio.
-          </p>
-          <div class="timer-actions">
-            <button id="btn-timer-start" class="btn btn-timer">Arrancar timer</button>
-            <button id="btn-timer-skip" class="btn-text">saltar</button>
+
+          <!-- Botonera de control físico -->
+          <div class="hardware-controls">
+            <button id="btn-done" class="btn-hardware btn-success">
+              <span class="btn-led led-green"></span>
+              <span>HECHO</span>
+              <span class="btn-key">Enter</span>
+            </button>
+
+            <button id="btn-simplify" class="btn-hardware btn-warning">
+              <span class="btn-led led-amber"></span>
+              <span>ES DEMASIADO</span>
+              <span class="btn-key">S</span>
+            </button>
+
+            <button id="btn-later" class="btn-hardware btn-muted">
+              <span>POSTERGAR</span>
+              <span class="btn-key">D</span>
+            </button>
+          </div>
+
+          <!-- Timer de emergencia de 2 minutos -->
+          <div id="timer-section" class="emergency-timer-module">
+            <div class="timer-display-panel">
+              <div class="timer-digits" id="timer-display">02:00</div>
+              <div class="timer-clause">
+                <strong>Cláusula de rescisión sin culpa:</strong>
+                Cumplidos los 120 segundos, tenés autorización total para cerrar esto si la cabeza sigue trabada.
+              </div>
+            </div>
+            <div class="timer-dock">
+              <button id="btn-timer-start" class="btn-hardware btn-timer">INICIAR CRONÓMETRO</button>
+              <button id="btn-timer-skip" class="btn-text-link">Ocultar</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PANTALLA 3: BALANCE FINAL -->
+      <section id="screen-done" class="panel-screen">
+        <div class="panel-frame">
+          <div class="frame-header">
+            <span class="frame-tag">INFORME_FINAL // BALANCE DE CARGA</span>
+            <span class="frame-meta">SESIÓN CONCLUIDA</span>
+          </div>
+
+          <div class="frame-body text-center">
+            <div class="done-stamp">✓ DESPEJADO</div>
+            <h2 class="panel-heading">Carga mental mitigada.</h2>
+            <p class="panel-lead">La fricción inicial ya fue superada.</p>
+
+            <div class="metrics-grid">
+              <div class="metric-block">
+                <span class="metric-val" id="stat-done">0</span>
+                <span class="metric-lbl">ACCIONES RESUELTAS</span>
+              </div>
+              <div class="metric-block">
+                <span class="metric-val" id="stat-later">0</span>
+                <span class="metric-lbl">POSTERGADAS SIN CULPA</span>
+              </div>
+            </div>
+
+            <!-- Previsualización del resumen de la sesión -->
+            <div class="session-log-preview">
+              <pre id="session-summary-text"></pre>
+            </div>
+
+            <div class="action-dock centered">
+              <button id="btn-copy-summary" class="btn-hardware btn-primary">
+                <span>COPIAR BALANCE AL PORTAPAPELES</span>
+              </button>
+              <button id="btn-continue" class="btn-hardware btn-warning" style="display:none;">
+                <span>PROCESAR POSTERGADAS</span>
+              </button>
+              <button id="btn-restart" class="btn-hardware btn-muted">
+                <span>NUEVA DESCARGA</span>
+              </button>
+            </div>
           </div>
         </div>
+      </section>
 
+    </main>
+
+    <!-- ==================== LADO DERECHO: BÓVEDA DE MATERIALES ==================== -->
+    <aside class="vault-drawer" id="vault-drawer">
+      <div class="vault-header">
+        <div class="vault-title">
+          <span class="vault-icon">⎘</span>
+          <span>BÓVEDA DE MATERIALES</span>
+        </div>
+        <button id="btn-close-vault" class="btn-close" title="Cerrar bóveda">✕</button>
       </div>
-    </section>
 
-    <!-- ==================== PANTALLA 3: SESIÓN TERMINADA ==================== -->
-    <section id="screen-done" class="screen">
-      <div class="screen-content">
-        <div class="done-orb" id="done-orb"></div>
-        <p class="done-heading">Sesión terminada.</p>
-
-        <div class="done-stats">
-          <div class="done-stat">
-            <span class="done-stat-num" id="stat-done">0</span>
-            <span class="done-stat-label">resueltas</span>
-          </div>
-          <div class="done-stat-divider"></div>
-          <div class="done-stat">
-            <span class="done-stat-num" id="stat-later">0</span>
-            <span class="done-stat-label">para después</span>
-          </div>
-        </div>
-
-        <div class="done-actions">
-          <button id="btn-restart" class="btn btn-main">Nueva descarga</button>
-          <button id="btn-continue" class="btn btn-ghost" style="display:none;">
-            Seguir con las pendientes
-          </button>
-        </div>
+      <div class="vault-info">
+        Archivos y enlaces vinculados a este espacio de trabajo. Guardados localmente en tu navegador (IndexedDB).
       </div>
-    </section>
+
+      <!-- Zona de carga (Drag and Drop) -->
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" id="file-input" multiple style="display:none;">
+        <span class="drop-icon">⇣</span>
+        <span class="drop-text">Arrastrá archivos acá o <u>hacé clic</u></span>
+        <span class="drop-sub">PDFs, capturas, apuntes (hasta 50MB)</span>
+      </div>
+
+      <!-- Añadir enlace rápido -->
+      <div class="link-adder">
+        <input type="text" id="quick-link-input" placeholder="Pegar URL (Google Docs, Canva, Drive...)">
+        <button id="btn-add-link" class="btn-hardware btn-small">+ LINK</button>
+      </div>
+
+      <!-- Lista de materiales guardados -->
+      <div class="vault-items-list" id="vault-items-list">
+        <div class="vault-empty">No hay materiales en este espacio.</div>
+      </div>
+    </aside>
 
   </div>
 
-  <!-- Atajos de teclado -->
-  <div class="keyboard-bar" id="keyboard-bar">
-    <span><kbd>Enter</kbd> Listo</span>
-    <span><kbd>S</kbd> Simplificar</span>
-    <span><kbd>D</kbd> Después</span>
-    <span><kbd>T</kbd> Timer</span>
+  <!-- ==================== MODAL: ¿CÓMO FUNCIONA? ==================== -->
+  <div class="modal-overlay" id="modal-info">
+    <div class="modal-window">
+      <div class="modal-header">
+        <span class="modal-tag">FUNDAMENTOS_TEÓRICOS // NEUROCIENCIA</span>
+        <button class="modal-close" data-close="modal-info">✕</button>
+      </div>
+      <div class="modal-body">
+        <h3>¿Por qué las listas tradicionales agravan la parálisis?</h3>
+        <p>
+          Cuando una persona experimenta sobrecarga cognitiva o disfunción ejecutiva, la amígdala interpreta una lista de 10 pendientes como una <strong>amenaza difusa</strong>. El cerebro activa la respuesta de congelamiento (freeze response) y posterga.
+        </p>
+
+        <div class="science-grid">
+          <div class="science-card">
+            <h4>1. Sobrecarga de memoria de trabajo</h4>
+            <p>La memoria de trabajo humana solo puede retener entre 4 y 7 elementos concurrentes. Al volcarlos en bloque en el <em>Brain Dump</em>, se alivia la presión biológica inmediata.</p>
+          </div>
+          <div class="science-card">
+            <h4>2. Modo Túnel (Tunnel Vision)</h4>
+            <p>Al ocultar el 99% de los pendientes y forzar la atención en <strong>un único estímulo visual</strong>, se elimina la competencia atencional y el cortisol desciende.</p>
+          </div>
+          <div class="science-card">
+            <h4>3. Desescalada de resistencia</h4>
+            <p>El botón <em>«Es demasiado»</em> no es una renuncia: es una técnica de fragmentación conductual. Si el cerebro no puede escribir un párrafo, sí puede abrir el archivo.</p>
+          </div>
+          <div class="science-card">
+            <h4>4. Cláusula de los 2 minutos</h4>
+            <p>La autorización explícita para abandonar la tarea tras 120 segundos desactiva el perfeccionismo paralizante. En el 85% de los casos, la inercia del movimiento conduce a continuar.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-hardware btn-primary" data-close="modal-info">ENTENDIDO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: DISTRACCIÓN MENTAL RÁPIDA ==================== -->
+  <div class="modal-overlay" id="modal-distraction">
+    <div class="modal-window modal-compact">
+      <div class="modal-header">
+        <span class="modal-tag">DESVÍO_ATENCIONAL // REGISTRO RÁPIDO</span>
+        <button class="modal-close" data-close="modal-distraction">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-lead">¿Qué idea o pendiente se te cruzó recién? Anotalo para sacarlo de la cabeza y volver a lo tuyo.</p>
+        <input type="text" id="distraction-input" class="chassis-input" placeholder="Ej: llamar al dentista, descongelar el pollo..." autofocus>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-hardware btn-primary" id="btn-save-distraction">GUARDAR A LA COLA</button>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>
