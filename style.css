@@ -1,0 +1,671 @@
+/* ==========================================================
+   DESPEJÁ — Estilos principales
+   Tema oscuro, minimalista, sin ruido visual.
+   ========================================================== */
+
+/* --- Variables de diseño --- */
+:root {
+  --bg-base:    #0d1117;
+  --bg-surface: #161b22;
+  --bg-card:    #1c2333;
+  --bg-hover:   #252d3a;
+  --border:     #30363d;
+  --border-light: #21262d;
+
+  --text-primary:   #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted:     #484f58;
+
+  --accent:    #d4a054;
+  --accent-dim: rgba(212, 160, 84, 0.15);
+  --green:     #3fb950;
+  --green-dim: rgba(63, 185, 80, 0.12);
+  --red:       #f85149;
+  --red-dim:   rgba(248, 81, 73, 0.12);
+  --blue:      #58a6ff;
+  --blue-dim:  rgba(88, 166, 255, 0.12);
+  --teal:      #4a9e8e;
+  --orange:    #db8b3e;
+
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Space Grotesk', 'Inter', sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.35);
+  --shadow-glow: 0 0 40px rgba(212, 160, 84, 0.08);
+}
+
+/* --- Reset --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.5;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- App container --- */
+#app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* --- Screens --- */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+  overflow-y: auto;
+}
+
+.screen.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.screen-content {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+
+/* ==========================================================
+   PANTALLA 1: DESCARGA MENTAL (Brain Dump)
+   ========================================================== */
+
+.logo {
+  font-family: var(--font-heading);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -1px;
+  user-select: none;
+}
+
+.tagline {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  text-align: center;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+#dump-input {
+  width: 100%;
+  background: var(--bg-surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+  resize: vertical;
+  min-height: 140px;
+  transition: border-color 0.25s ease;
+}
+
+#dump-input::placeholder {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+#dump-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  max-width: 380px;
+}
+
+
+/* ==========================================================
+   BOTONES
+   ========================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 13px 28px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* Botón principal (Descargar / Nueva descarga) */
+.btn-main {
+  background: var(--accent);
+  color: var(--bg-base);
+  min-width: 200px;
+}
+
+.btn-main:hover:not(:disabled) {
+  background: #dea95e;
+  box-shadow: 0 4px 16px rgba(212, 160, 84, 0.3);
+}
+
+.btn-main:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Botón "Listo" (verde, positivo pero seco) */
+.btn-done {
+  background: var(--green);
+  color: var(--bg-base);
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-done:hover {
+  background: #4ac45e;
+  box-shadow: 0 4px 16px rgba(63, 185, 80, 0.25);
+}
+
+/* Botón "Es demasiado" (azul, neutro) */
+.btn-simplify {
+  background: var(--blue-dim);
+  color: var(--blue);
+  border: 1px solid rgba(88, 166, 255, 0.25);
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-simplify:hover {
+  background: rgba(88, 166, 255, 0.2);
+}
+
+/* Botón "Después" (transparente) */
+.btn-later {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  flex: 0.7;
+  min-width: 0;
+}
+
+.btn-later:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Botón ghost (done screen) */
+.btn-ghost {
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  min-width: 200px;
+}
+
+.btn-ghost:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Botón texto (← volver) */
+.btn-text {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: color 0.2s;
+}
+
+.btn-text:hover {
+  color: var(--text-secondary);
+}
+
+/* Timer button */
+.btn-timer {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid rgba(212, 160, 84, 0.25);
+}
+
+.btn-timer:hover {
+  background: rgba(212, 160, 84, 0.25);
+}
+
+.btn-timer.running {
+  background: var(--red-dim);
+  color: var(--red);
+  border-color: rgba(248, 81, 73, 0.25);
+}
+
+
+/* ==========================================================
+   PANTALLA 2: MODO TÚNEL
+   ========================================================== */
+
+.tunnel-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* --- Indicador de estrés (orb + número) --- */
+.stress-indicator {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stress-orb {
+  --orb-size: 40px;
+  --orb-color: var(--red);
+  --pulse-speed: 1.2s;
+
+  width: var(--orb-size);
+  height: var(--orb-size);
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%,
+    var(--orb-color),
+    rgba(0, 0, 0, 0.4)
+  );
+  box-shadow: 0 0 20px color-mix(in srgb, var(--orb-color) 30%, transparent);
+  animation: orb-pulse var(--pulse-speed) ease-in-out infinite alternate;
+  transition: width 0.5s ease, height 0.5s ease;
+  flex-shrink: 0;
+}
+
+@keyframes orb-pulse {
+  from { transform: scale(1); opacity: 0.75; }
+  to   { transform: scale(1.18); opacity: 1; }
+}
+
+.stress-text {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.stress-number {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stress-label {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+/* --- Tarjeta túnel (la tarea actual) --- */
+.tunnel-card {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  box-shadow: var(--shadow-card);
+  animation: breathe 4s ease-in-out infinite;
+  transition: box-shadow 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@keyframes breathe {
+  0%, 100% { box-shadow: var(--shadow-card), 0 0 30px rgba(212, 160, 84, 0.04); }
+  50%      { box-shadow: var(--shadow-card), var(--shadow-glow); }
+}
+
+.task-type-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.task-name {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.step-divider {
+  width: 40px;
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.step-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.step-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+.step-instruction {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  line-height: 1.55;
+  padding: 14px 18px;
+  background: var(--bg-surface);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.step-counter {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* --- Botones de acción (fila) --- */
+.tunnel-actions {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+
+/* --- Timer de 2 minutos --- */
+.timer-section {
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  animation: fadeIn 0.3s ease;
+}
+
+.timer-section.visible {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.timer-ring {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s;
+}
+
+.timer-ring.active {
+  border-color: var(--accent);
+  animation: timer-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes timer-glow {
+  from { box-shadow: 0 0 10px var(--accent-dim); }
+  to   { box-shadow: 0 0 25px rgba(212, 160, 84, 0.2); }
+}
+
+.timer-display {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.timer-note {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+.timer-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+
+/* ==========================================================
+   PANTALLA 3: SESIÓN TERMINADA
+   ========================================================== */
+
+.done-orb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 20px rgba(63, 185, 80, 0.3);
+  animation: done-breathe 3s ease-in-out infinite alternate;
+}
+
+@keyframes done-breathe {
+  from { transform: scale(1); }
+  to   { transform: scale(1.15); }
+}
+
+.done-heading {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.done-stats {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 20px 32px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.done-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.done-stat-num {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.done-stat-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.done-stat-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+}
+
+.done-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+
+/* ==========================================================
+   BARRA DE ATAJOS DE TECLADO
+   ========================================================== */
+
+.keyboard-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px 16px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-light);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.keyboard-bar.visible {
+  opacity: 1;
+}
+
+kbd {
+  display: inline-block;
+  padding: 2px 7px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  margin-right: 4px;
+  color: var(--text-secondary);
+}
+
+
+/* ==========================================================
+   ANIMACIONES AUXILIARES
+   ========================================================== */
+
+/* Transición suave de la tarjeta al cambiar de tarea */
+.tunnel-card.switching {
+  opacity: 0.3;
+  transform: translateY(6px);
+  transition: all 0.15s ease;
+}
+
+/* Efecto de resolución cuando se completa una tarea */
+.tunnel-card.resolved {
+  border-color: var(--green);
+  box-shadow: var(--shadow-card), 0 0 30px rgba(63, 185, 80, 0.1);
+}
+
+/* Efecto de "es demasiado" al simplificar */
+.tunnel-card.simplifying {
+  border-color: var(--blue);
+}
+
+
+/* ==========================================================
+   RESPONSIVO
+   ========================================================== */
+
+@media (max-width: 600px) {
+  .screen {
+    padding: 16px;
+  }
+
+  .screen-content {
+    gap: 18px;
+  }
+
+  .logo {
+    font-size: 2rem;
+  }
+
+  .tunnel-card {
+    padding: 24px 20px;
+  }
+
+  .task-name {
+    font-size: 1.15rem;
+  }
+
+  .step-instruction {
+    font-size: 1rem;
+  }
+
+  .tunnel-actions {
+    flex-direction: column;
+  }
+
+  .tunnel-actions .btn {
+    flex: unset;
+    width: 100%;
+  }
+
+  .keyboard-bar {
+    display: none;
+  }
+
+  .done-stats {
+    padding: 16px 24px;
+    gap: 20px;
+  }
+}

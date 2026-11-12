@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Despejá — Herramienta contra el bloqueo mental</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="app">
+
+    <!-- ==================== PANTALLA 1: DESCARGA MENTAL ==================== -->
+    <section id="screen-dump" class="screen active">
+      <div class="screen-content">
+        <div class="logo">Despejá</div>
+        <p class="tagline">Descargá todo lo que tenés en la cabeza. Después vemos.</p>
+
+        <textarea
+          id="dump-input"
+          rows="7"
+          placeholder="Escribí todo lo que te pesa, separado por comas o en líneas distintas.&#10;&#10;Ejemplo: terminar el TP de historia, contestarle al profe, ordenar el escritorio, estudiar para el parcial de mate"
+          autofocus
+        ></textarea>
+
+        <button id="btn-dump" class="btn btn-main" disabled>Descargar</button>
+
+        <p class="hint">
+          No hace falta que sea prolijo. Volcá todo y después lo separamos.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== PANTALLA 2: MODO TÚNEL ==================== -->
+    <section id="screen-tunnel" class="screen">
+      <div class="screen-content">
+
+        <!-- Indicador de carga mental -->
+        <div class="tunnel-header">
+          <div class="stress-indicator">
+            <div class="stress-orb" id="stress-orb"></div>
+            <div class="stress-text">
+              <span class="stress-number" id="tasks-remaining">0</span>
+              <span class="stress-label" id="stress-label">cosas pendientes</span>
+            </div>
+          </div>
+          <button id="btn-back" class="btn-text" title="Volver al inicio">← volver</button>
+        </div>
+
+        <!-- Tarjeta central: UNA sola tarea -->
+        <div class="tunnel-card" id="tunnel-card">
+          <div class="task-type-badge" id="task-type-label">Tarea</div>
+          <div class="task-name" id="task-name">...</div>
+          <div class="step-divider"></div>
+          <div class="step-section">
+            <div class="step-label">Siguiente paso concreto:</div>
+            <div class="step-instruction" id="step-instruction">...</div>
+          </div>
+          <div class="step-counter" id="step-counter"></div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="tunnel-actions">
+          <button id="btn-done" class="btn btn-done">Listo</button>
+          <button id="btn-simplify" class="btn btn-simplify">Es demasiado</button>
+          <button id="btn-later" class="btn btn-later">Después</button>
+        </div>
+
+        <!-- Timer de 2 minutos (aparece cuando es necesario) -->
+        <div id="timer-section" class="timer-section">
+          <div class="timer-ring" id="timer-ring">
+            <span class="timer-display" id="timer-display">2:00</span>
+          </div>
+          <p class="timer-note">
+            Si en 2 minutos querés dejarlo, cerrá sin culpa. En serio.
+          </p>
+          <div class="timer-actions">
+            <button id="btn-timer-start" class="btn btn-timer">Arrancar timer</button>
+            <button id="btn-timer-skip" class="btn-text">saltar</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== PANTALLA 3: SESIÓN TERMINADA ==================== -->
+    <section id="screen-done" class="screen">
+      <div class="screen-content">
+        <div class="done-orb" id="done-orb"></div>
+        <p class="done-heading">Sesión terminada.</p>
+
+        <div class="done-stats">
+          <div class="done-stat">
+            <span class="done-stat-num" id="stat-done">0</span>
+            <span class="done-stat-label">resueltas</span>
+          </div>
+          <div class="done-stat-divider"></div>
+          <div class="done-stat">
+            <span class="done-stat-num" id="stat-later">0</span>
+            <span class="done-stat-label">para después</span>
+          </div>
+        </div>
+
+        <div class="done-actions">
+          <button id="btn-restart" class="btn btn-main">Nueva descarga</button>
+          <button id="btn-continue" class="btn btn-ghost" style="display:none;">
+            Seguir con las pendientes
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Atajos de teclado -->
+  <div class="keyboard-bar" id="keyboard-bar">
+    <span><kbd>Enter</kbd> Listo</span>
+    <span><kbd>S</kbd> Simplificar</span>
+    <span><kbd>D</kbd> Después</span>
+    <span><kbd>T</kbd> Timer</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
